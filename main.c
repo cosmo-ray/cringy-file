@@ -230,12 +230,12 @@ static int cringy_readdir(const char *path, void *buf, fuse_fill_dir_t filler,
 	if (strcmp(path, "/") != 0)
 		return -ENOENT;
 
-	filler(buf, ".", NULL, 0, FUSE_FILL_DIR_DEFAULTS);
-	filler(buf, "..", NULL, 0, FUSE_FILL_DIR_DEFAULTS);
-	filler(buf, CRINGY_NAME, NULL, 0, FUSE_FILL_DIR_DEFAULTS);
+	filler(buf, ".", NULL, 0, 0);
+	filler(buf, "..", NULL, 0, 0);
+	filler(buf, CRINGY_NAME, NULL, 0, 0);
 	for (int i = 0; i < MAX_PARASITES; ++i) {
 		if (parasites[i]) {
-			filler(buf, parasites[i], NULL, 0, FUSE_FILL_DIR_DEFAULTS);
+			filler(buf, parasites[i], NULL, 0, 0);
 		}
 	}
 
@@ -289,7 +289,7 @@ static int cringy_read(const char *path, char *buf, size_t size, off_t offset,
 }
 
 #define cmp(buf, s)				\
-	!strcmp(buf, s) || !strcmp(buf, s"\n")
+	!strncmp(buf, s, size) || !strncmp(buf, s"\n", size)
 
 static int cringy_write(const char *path, const char *buf, size_t size, off_t off, struct fuse_file_info *fi)
 {
@@ -384,7 +384,7 @@ wrong:
 	unhappy_life += 3;
 out:
 	make_text(0);
-	return strlen(buf);
+	return size;
 }
 
 static const struct fuse_operations cringy_oper = {
