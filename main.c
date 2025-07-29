@@ -1,5 +1,5 @@
 #define FUSE_USE_VERSION 31
-#include <fuse.h>
+#include <fuse3/fuse.h>
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
@@ -7,6 +7,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <unistd.h>
+#include <assert.h>
 
 time_t init_time;
 time_t last_refresh;
