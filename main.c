@@ -140,7 +140,8 @@ void make_text(int flag)
 				   "cringy is: %s\n"
 				   "%s\n"
 				   "last thing cringy tell you:\n%s\n"
-				   "\n%s\n", (size_t)t - init_time, hapiness_text(),
+				   "\n%s\n", (size_t)t - (size_t)init_time,
+				   hapiness_text(),
 				   have_need_been_satisfied ? "cringy want nothing":
 				   need_str[current_need], status,
 				   nb_parasite ? parasite_txt_buf : "at last there's no parasites here");
