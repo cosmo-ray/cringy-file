@@ -75,17 +75,6 @@ enum {
 	FORCE_REFRESH = 1 << 0
 };
 
-/*
- * Command line options
- *
- * We can't set default values for the char* fields here because
- * fuse_opt_parse would attempt to free() them when the user specifies
- * different values on the command line.
- */
-static struct options {
-	int show_help;
-} options;
-
 static const char *hapiness_text(void)
 {
 	int happy_cnt = happy_life - unhappy_life;
@@ -105,21 +94,6 @@ static const char *hapiness_text(void)
 	}
 }
 
-static void show_help(const char *progname)
-{
-	printf("usage: %s [options] <mountpoint>\n\n", progname);
-	printf("File-system specific options:\n"
-	       "None for now\n"
-	       "\n");
-}
-
-#define OPTION(t, p)                           \
-    { t, offsetof(struct options, p), 1 }
-static const struct fuse_opt option_spec[] = {
-	OPTION("-h", show_help),
-	OPTION("--help", show_help),
-	FUSE_OPT_END
-};
 
 void make_text(int flag)
 {
@@ -166,7 +140,7 @@ void make_text(int flag)
 				   "cringy is: %s\n"
 				   "%s\n"
 				   "last thing cringy tell you:\n%s\n"
-				   "\n%s\n", t - init_time, hapiness_text(),
+				   "\n%s\n", (size_t)t - init_time, hapiness_text(),
 				   have_need_been_satisfied ? "cringy want nothing":
 				   need_str[current_need], status,
 				   nb_parasite ? parasite_txt_buf : "at last there's no parasites here");
@@ -400,25 +374,7 @@ static const struct fuse_operations cringy_oper = {
 int main(int argc, char *argv[])
 {
 	int ret;
-	struct fuse_args args = FUSE_ARGS_INIT(argc, argv);
 
-
-	/* Parse options */
-	if (fuse_opt_parse(&args, &options, option_spec, NULL) == -1)
-		return 1;
-
-	/* When --help is specified, first print our own file-system
-	   specific help text, then signal fuse_main to show
-	   additional help (by adding `--help` to the options again)
-	   without usage: line (by setting argv[0] to the empty
-	   string) */
-	if (options.show_help) {
-		show_help(argv[0]);
-		assert(fuse_opt_add_arg(&args, "--help") == 0);
-		args.argv[0][0] = '\0';
-	}
-
-	ret = fuse_main(args.argc, args.argv, &cringy_oper, NULL);
-	fuse_opt_free_args(&args);
+	ret = fuse_main(argc, argv, &cringy_oper, NULL);
 	return ret;
 }
