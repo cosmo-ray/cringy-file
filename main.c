@@ -36,11 +36,9 @@ char *no_need_str[] = {
 	NULL
 };
 
-#define MAX_PARASITES 64
-
 int nb_parasite;
 
-const char *parasite_names[MAX_PARASITES] = {
+const char *parasite_names[] = {
 	"Jean-Robet-the-annoying-file.txt",
 	"An-overexited-arch-user.BTW",
 	"ev&ng*li#n.avi",
@@ -50,6 +48,8 @@ const char *parasite_names[MAX_PARASITES] = {
 	"windows-user.boring",
 	"catgirl-dekimakura.png"
 };
+
+#define MAX_PARASITES (int)(sizeof parasite_names / sizeof *parasite_names)
 
 const char *parasites[MAX_PARASITES];
 
@@ -152,7 +152,7 @@ static void *cringy_init(struct fuse_conn_info *conn,
 			struct fuse_config *cfg)
 {
 	(void) conn;
-	printf("init cringy !\n");
+	printf("init cringy %d !\n", (int)MAX_PARASITES);
 	init_time = time(NULL);
 	last_refresh = init_time;
 	srand(init_time);
